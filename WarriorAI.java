@@ -4,19 +4,19 @@ import javax.swing.*;
 import java.util.Random;
 
 public class WarriorAI extends JPanel implements ActionListener {
-	// these are the fields that are used throughout the project. 
+	// these are the fields that are used throughout the project.
 	// the finals are values that should not be changed
 	static final int SCREEN_WIDTH = 700;
 	static final int SCREEN_HEIGHT = 700;
 	static final int CELL_SIZE = 25;
-	static final int DELAY = 75;
+	static final int DELAY = 14;
 	// this keeps track of the player's x and y values as well as assigns
 	// values at the start
 	int playerX = SCREEN_WIDTH/2;
 	int playerY = SCREEN_HEIGHT-CELL_SIZE;
 	// this keeps track of how many walls and enemies are on the board
 	int wallCount = 75;
-	int enemyCount = 5;
+	int enemyCount = 1;
 	// this will be where the star will be right now the star isn't implemented
 	// the star reveals itself once all enemies are defeated
 	int starX;
@@ -24,6 +24,7 @@ public class WarriorAI extends JPanel implements ActionListener {
 	// this keeps track of the last move made by the player
 	int lastMove = 0;
 	int count = 0;
+	int actionPoints = 0;
 	// this keeps track of all the enemy's x and y values
 	int enemyX[] = new int [enemyCount];
 	int enemyY[] = new int [enemyCount];
@@ -43,6 +44,7 @@ public class WarriorAI extends JPanel implements ActionListener {
 	boolean programActive = false;
 	Timer timer;
 	Random random;
+	BasicEnemy firstEnemy = new BasicEnemy (playerX , playerY);
 	// this starts the game
 	WarriorAI () {
 		random = new Random();
@@ -50,13 +52,39 @@ public class WarriorAI extends JPanel implements ActionListener {
 		this.setBackground(Color.WHITE);
 		this.setFocusable(true);
 		this.addKeyListener(new keyInput());
+		firstEnemy = new BasicEnemy (playerX, playerY);
+		for (int i = 0; i<enemyCount;i++) {
+			int a = -1;
+			int b = -1;
+			//while (a%25 != 0) {
+				a = random.nextInt((int)(SCREEN_WIDTH/CELL_SIZE))*CELL_SIZE;
+			//}
+			//while (b%25 != 0) {
+				b = random.nextInt(650/CELL_SIZE)*CELL_SIZE;
+			//}
+			enemyX[i] = a;
+			enemyY[i] = b;
+			firstEnemy.setX(a);
+			firstEnemy.setY(b);
+		}
 		startBattle();
+
 	}
 	// this starts the battle by causing everything to start
 	public void startBattle() {
 		programActive = true;
 		timer = new Timer(DELAY,this);
-		timer.start();	
+		timer.start();
+		int a = -1;
+		int b = -1;
+		while (a%25 != 0) {
+			a = random.nextInt(700);
+		}
+		while (b%25 != 0) {
+			b = random.nextInt(650);
+		}
+		enemyX[0] = a;
+		enemyY[0] = b;
 	}
 	// this is a superclass that triggers all of the other methods that involve graphics
 	public void paintComponent(Graphics g) {
@@ -68,12 +96,12 @@ public class WarriorAI extends JPanel implements ActionListener {
 	}
 	// this will be used to draw the attacks
 	public void drawScreen (Graphics g) {
-	/*
-		for (int i = 0; i<8;i++) {
-			g.setColor(Color.CYAN);
-			g.fillRect(attackX[i],attackY[i], CELL_SIZE,CELL_SIZE);
-		}
-	*/
+		/*
+for (int i = 0; i<8;i++) {
+g.setColor(Color.CYAN);
+g.fillRect(attackX[i],attackY[i], CELL_SIZE,CELL_SIZE);
+}
+		 */
 		g.setColor(Color.CYAN);
 		g.fillRect(attackDirectionX,attackDirectionY, CELL_SIZE,CELL_SIZE);
 	}
@@ -81,23 +109,23 @@ public class WarriorAI extends JPanel implements ActionListener {
 	public void Player(Graphics g) {
 		g.setColor(Color.GREEN);
 		g.fillRect(playerX, playerY, CELL_SIZE, CELL_SIZE);
-		
+
 	}
 	// this generates the walls the first time its called and everytime after it draws the walls
 	public void walls(Graphics g) {
 		g.setColor(Color.GRAY);
 		if (twice == true) {
-		for (int i = 0; i<wallCount;i++) {
-			int a = -1;
-			int b = -1;
-			while (a%25 != 0) {
-				a = random.nextInt(700);
-			}
-			while (b%25 != 0) {
-				b = random.nextInt(650);
-			}
-			x[i] = a;
-			y[i] = b;
+			for (int i = 0; i<wallCount;i++) {
+				int a = -1;
+				int b = -1;
+				while (a%25 != 0) {
+					a = random.nextInt(700);
+				}
+				while (b%25 != 0) {
+					b = random.nextInt(650);
+				}
+				x[i] = a;
+				y[i] = b;
 			}
 		}
 		twice = false;
@@ -106,25 +134,41 @@ public class WarriorAI extends JPanel implements ActionListener {
 		}
 	}
 	// this generates the enemies the first time its called and everytime after it draws them
+	/*
+public void enemy(Graphics g) {
+g.setColor(Color.RED);
+if (once == true) {
+for (int i = 0; i<enemyCount;i++) {
+int a = -1;
+int b = -1;
+while (a%25 != 0) {
+a = random.nextInt(700);
+}
+while (b%25 != 0) {
+b = random.nextInt(650);
+}
+enemyX[i] = a;
+enemyY[i] = b;
+}
+}
+once = false;
+for (int i = 0; i<enemyCount;i++) {
+g.fillRect(enemyX[i], enemyY[i], CELL_SIZE, CELL_SIZE);
+}
+}
+	 */
 	public void enemy(Graphics g) {
+
 		g.setColor(Color.RED);
-		if (once == true) {
-		for (int i = 0; i<enemyCount;i++) {
-			int a = -1;
-			int b = -1;
-			while (a%25 != 0) {
-				a = random.nextInt(700);
-			}
-			while (b%25 != 0) {
-				b = random.nextInt(650);
-			}
-			enemyX[i] = a;
-			enemyY[i] = b;
-			}
+		if (actionPoints==0) {
+			firstEnemy.setPlayerX(playerX);
+			firstEnemy.setPlayerY(playerY);
+			firstEnemy.movement();
+			actionPoints = 3;
 		}
-		once = false;
+
 		for (int i = 0; i<enemyCount;i++) {
-			g.fillRect(enemyX[i], enemyY[i], CELL_SIZE, CELL_SIZE);
+			g.fillRect(firstEnemy.getX(), firstEnemy.getY(), CELL_SIZE, CELL_SIZE);
 		}
 	}
 	// this moves the player in a certain direction, which is entered by the player
@@ -149,29 +193,30 @@ public class WarriorAI extends JPanel implements ActionListener {
 				playerY+=CELL_SIZE;
 			}
 		}
+		actionPoints--;
 		attack = false;
 	}
 	// this method will be used to calculate the attack
 	public void attack() {
-		/*	
-			attackX[0] = playerX-CELL_SIZE;
-			attackX[1] = playerX;
-			attackX[2] = playerX+CELL_SIZE;
-			attackX[3] = playerX-CELL_SIZE;
-			attackX[4] = playerX+CELL_SIZE;
-			attackX[5] = playerX-CELL_SIZE;
-			attackX[6] = playerX;
-			attackX[7] = playerX+CELL_SIZE;
-			
-			attackY[0] = playerY-CELL_SIZE;
-			attackY[1] = playerY-CELL_SIZE;
-			attackY[2] = playerY-CELL_SIZE;
-			attackY[3] = playerY;
-			attackY[4] = playerY;
-			attackY[5] = playerY+CELL_SIZE;
-			attackY[6] = playerY+CELL_SIZE;
-			attackY[7] = playerY+CELL_SIZE;
-		*/
+		/*
+attackX[0] = playerX-CELL_SIZE;
+attackX[1] = playerX;
+attackX[2] = playerX+CELL_SIZE;
+attackX[3] = playerX-CELL_SIZE;
+attackX[4] = playerX+CELL_SIZE;
+attackX[5] = playerX-CELL_SIZE;
+attackX[6] = playerX;
+attackX[7] = playerX+CELL_SIZE;
+
+attackY[0] = playerY-CELL_SIZE;
+attackY[1] = playerY-CELL_SIZE;
+attackY[2] = playerY-CELL_SIZE;
+attackY[3] = playerY;
+attackY[4] = playerY;
+attackY[5] = playerY+CELL_SIZE;
+attackY[6] = playerY+CELL_SIZE;
+attackY[7] = playerY+CELL_SIZE;
+		 */
 		if (lastMove == 1) {
 			attackDirectionX = playerX-CELL_SIZE;
 			attackDirectionY = playerY;
@@ -200,7 +245,7 @@ public class WarriorAI extends JPanel implements ActionListener {
 			attackX[5] = -25;
 			attackX[6] = -25;
 			attackX[7] = -25;
-			
+
 			attackY[0] = -25;
 			attackY[1] = -25;
 			attackY[2] = -25;
@@ -254,15 +299,15 @@ public class WarriorAI extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if (programActive == true) {
-		checkCollisions();
-		attackEvade();
-		attackHitEnemy();
+			checkCollisions();
+			attackEvade();
+			attackHitEnemy();
 		}
 		repaint();
 	}
 	public class keyInput extends KeyAdapter{
 		@Override
-		//The source for the KeyEvent and extending KeyAdapter are from a video by 
+		//The source for the KeyEvent and extending KeyAdapter are from a video by
 		// bro code where they are making a snake game
 		// this takes a key input and a key event and checks if the key is important
 		// if it is then it registers a number as the move. This also keeps the code crisp
@@ -288,13 +333,13 @@ public class WarriorAI extends JPanel implements ActionListener {
 			case KeyEvent.VK_SPACE:
 				if (attack == false) {
 					attack = true;
-					//attack();
+					attack();
 				} else {
 					attack = false;
 				}
 			}
 		}
-		
+
 	}
 
 }
